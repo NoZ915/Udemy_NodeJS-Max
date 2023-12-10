@@ -5,21 +5,23 @@
 }
 
 .product-item {
-    width: 20rem;
+    width: 10rem;
     max-width: 95%;
 }
 
 .product__title {
-    font-size: 1.2rem;
+    font-size: 10px;
     text-align: center;
 }
 
 .product__price {
     text-align: center;
+    font-size: 10px;
     color: #4d4d4d;
     margin-bottom: 0.5rem;
 }
 
 .product__description {
     text-align: center;
+    font-size: 10px;
 }
