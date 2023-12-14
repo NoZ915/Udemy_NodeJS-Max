@@ -1,16 +1,19 @@
 const fs = require("fs");
 const path = require("path");
 
-module.exports = class Product{
-    constructor(title){
-        this.t = title;
+module.exports = class Product {
+    constructor(title, imageUrl, description, price) {
+        this.title = title;
+        this.imageUrl = imageUrl;
+        this.description = description;
+        this.price = price;
     }
 
-    save(){
+    save() {
         const p = path.join(path.dirname(require.main.filename), "data", "product.json");
         fs.readFile(p, (err, fileContent) => {
             let products = [];
-            if(!err){
+            if (!err) {
                 products = JSON.parse(fileContent);
             }
             products.push(this);
@@ -20,10 +23,10 @@ module.exports = class Product{
         })
     }
 
-    static fetchAll(cb){
+    static fetchAll(cb) {
         const p = path.join(path.dirname(require.main.filename), "data", "product.json");
         fs.readFile(p, (err, fileContent) => {
-            if(err){ //有err代表讀取不到p，可能是還未建立product.json
+            if (err) { //有err代表讀取不到p，可能是還未建立product.json
                 cb([]);
             }
             cb(JSON.parse(fileContent));
