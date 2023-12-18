@@ -3,7 +3,8 @@ const Product = require("../models/product");
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
-    path: "/admin/add-product"
+    path: "/admin/add-product",
+    editing: false
   })
 }
 
@@ -12,7 +13,7 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const product = new Product(title, imageUrl, description, price); //送出表單 > 發送POST request > 建立Product實例
+  const product = new Product(null, title, imageUrl, description, price); //送出表單 > 發送POST request > 建立Product實例
   product.save(); // save()會把this（也就是自己，product）推進products陣列中
   res.redirect('/');
 }
@@ -36,6 +37,17 @@ exports.getEditProduct = (req, res, next) => {
   })
 }
 
+exports.postEditProduct = (req, res, next) => {
+  const prodId = req.body.productId;
+  const updateTitle = req.body.title;
+  const updatedprice = req.body.price;
+  const updatedImageUrl = req.body.imageUrl;
+  const updatedDescription = req.body.description;
+  const updatedProduct = new Product(prodId, updateTitle, updatedImageUrl, updatedDescription, updatedprice);
+  updatedProduct.save();
+  res.redirect("/admin/products");
+}
+
 exports.getProducts = (req, res, next) => {
   Product.fetchAll((products) => {
     res.render("admin/products", {
@@ -43,4 +55,10 @@ exports.getProducts = (req, res, next) => {
       pageTitle: "Admin Products", path: "/admin/porducts"
     });
   });
+}
+
+exports.postDeleteProduct = (req, res, next) => {
+  const prodId = req.body.productId;
+  Product.deleteById(prodId);
+  res.redirect("/admin/products");
 }
