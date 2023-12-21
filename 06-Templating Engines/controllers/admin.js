@@ -14,18 +14,21 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   const product = new Product(null, title, imageUrl, description, price); //送出表單 > 發送POST request > 建立Product實例
-  product.save(); // save()會把this（也就是自己，product）推進products陣列中
-  res.redirect('/');
+  product.save()
+    .then(() => {
+      res.redirect('/');
+    })
+    .catch(err => console.log(err)); // save()會把this（也就是自己，product）推進products陣列中
 }
 
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
-  if(!editMode){
+  if (!editMode) {
     return res.redirect("/");
   }
   const prodId = req.params.productId;
   Product.findById(prodId, product => {
-    if(!product){
+    if (!product) {
       return res.redirect("/");
     }
     res.render("admin/edit-product", {
