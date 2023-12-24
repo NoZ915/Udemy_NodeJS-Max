@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 const adminRoutes = require('./routes/admin');
-// const shopRoutes = require('./routes/shop');
+const shopRoutes = require('./routes/shop');
 
 app.use((req, res, next) => {
   // User.findByPk(1)
@@ -30,7 +30,7 @@ app.use((req, res, next) => {
 })
 
 app.use('/admin', adminRoutes);
-// app.use(shopRoutes);
+app.use(shopRoutes);
 
 const errorController = require("./controllers/error");
 app.use(errorController.get404);
