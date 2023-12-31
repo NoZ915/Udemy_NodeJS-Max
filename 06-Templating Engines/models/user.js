@@ -20,12 +20,25 @@ class User{
   }
 
   addToCart(product){
-    const updatedCart = {items:[{...product, quantity: 1}]};
+    const cartProductIndex = this.cart.items.findIndex(cp => {
+      return cp.productId.toString() === product._id.toString(); //若為true代表user購物車中已有該商品
+    })
+    let newQuantity = 1;
+    const updatedCartItems = [...this.cart.items];
+
+    if(cartProductIndex >= 0){ //大於等於0代表有找到符合的商品
+      newQuantity = this.cart.items[cartProductIndex].quantity + 1;
+      updatedCartItems[cartProductIndex].quantity = newQuantity;
+    }else{ //若購物車上未有該商品，則將之push進陣列
+      updatedCartItems.push({productId: new ObjectId(product._id), quantity: newQuantity})
+    }
+
+    const updatedCart = {items: updatedCartItems};
+
     const db = getDb(updatedCart);
     return db
       .collection("users")
       .updateOne({_id: new ObjectId(this._id)},{$set: {cart: updatedCart}})
-
   }
 
   static findById(userId){
