@@ -41,6 +41,10 @@ class User{
       .updateOne({_id: new ObjectId(this._id)},{$set: {cart: updatedCart}})
   }
 
+  getCart(){
+    const db = getDb();
+  }
+
   static findById(userId){
     const db = getDb();
     return db
