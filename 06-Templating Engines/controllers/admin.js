@@ -13,7 +13,13 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const product = new Product(title, price, description, imageUrl, null, req.user._id);
+  const product = new Product({
+    title:title, 
+    price:price,
+    description: description, 
+    imageUrl: imageUrl,
+    userId: req.user._id //也可以單寫req.user
+  });
   product
     .save()
     .then(result => {
@@ -31,7 +37,7 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect("/");
   }
   const prodId = req.params.productId;
-  Product.fetchById(prodId)
+  Product.findById(prodId)
     .then(product => {
       if (!product) {
         return res.redirect("/");
@@ -51,11 +57,19 @@ exports.getEditProduct = (req, res, next) => {
 exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
-  const updatedprice = req.body.price;
+  const updatedPrice = req.body.price;
   const updatedImageUrl = req.body.imageUrl;
   const updatedDescription = req.body.description;
-  const product = new Product(updatedTitle, updatedprice, updatedDescription, updatedImageUrl,prodId);
-  product.save()
+  console.log(updatedTitle)
+  Product.findByIdAndUpdate(
+      prodId,
+      {
+        title: updatedTitle,
+        price: updatedPrice,
+        description: updatedDescription,
+        imageUrl: updatedImageUrl
+      }
+    )
     .then(result => {
       console.log("Updated Product")
       res.redirect("/admin/products");
@@ -66,7 +80,7 @@ exports.postEditProduct = (req, res, next) => {
 }
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then(products => {
       res.render("admin/products", {
         prods: products,
@@ -80,7 +94,7 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.deleteById(prodId)
+  Product.findByIdAndDelete(prodId)
     .then(() => {
       console.log("Destroyed product");
       res.redirect("/admin/products");
