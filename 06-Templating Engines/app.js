@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
+const flash = require("connect-flash");
 
 const User = require('./models/user');
 
@@ -26,6 +27,8 @@ const authRoutes = require('./routes/auth');
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({secret: "my secret", resave: false, saveUninitialized: false, store: store}))
+
+app.use(flash());
 
 app.use((req, res, next) => {
   if(!req.session.user){
@@ -50,16 +53,6 @@ app.use(errorController.get404);
 
 mongoose.connect(MONGODB_URI)
   .then(result => {
-    User.findOne().then(user => {
-      if (!user) {
-        const user = new User({
-          name: "Max",
-          email: "abc@gmail.com",
-          cart: { items: [] }
-        })
-        user.save();
-      }
-    })
     app.listen(3000);
   })
   .catch(err => {
